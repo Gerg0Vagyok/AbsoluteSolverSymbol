@@ -1,0 +1,155 @@
+<!--<style>
+    #AbsoluteSolverLogo {
+        background-image: url('https://i.imgur.com/rBvEVU5.png'); /* An image from imgur */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-color: #f0f0f0;
+</style>-->
+<!--<style>
+    .main-fill {
+        fill: #fff;
+        stroke: #fff;
+    }
+    .glow {
+        flood-color: #f00;
+    }
+    * {
+        background-color: #0000;
+    }
+</style>-->
+<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="-400 -400 1400 1400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <filter id="glow" x="-100%" y="-100%" width="500%" height="500%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+            <feFlood class="glow" result="color"/>
+            <feComposite in="color" in2="blur" operator="in" result="coloredBlur"/>
+
+            <feGaussianBlur in="SourceAlpha" stdDeviation="40" result="blur2"/>
+            <feFlood class="glow" result="color"/>
+            <feComposite in="color" in2="blur2" operator="in" result="coloredBlur2"/>
+
+            <feGaussianBlur in="SourceAlpha" stdDeviation="80" result="blur3"/>
+            <feFlood class="glow" result="color"/>
+            <feComposite in="color" in2="blur3" operator="in" result="coloredBlur3"/>
+
+            <feGaussianBlur in="SourceAlpha" stdDeviation="180" result="blur4"/>
+            <feFlood class="glow" result="color"/>
+            <feComposite in="color" in2="blur4" operator="in" result="coloredBlur4"/>
+
+            <feGaussianBlur in="SourceAlpha" stdDeviation="180" result="blur5"/>
+            <feFlood class="glow" result="color"/>
+            <feComposite in="color" in2="blur5" operator="in" result="coloredBlur5"/>
+
+            <feMerge>
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="coloredBlur2"/>
+                <feMergeNode in="coloredBlur3"/>
+                <feMergeNode in="coloredBlur4"/>
+                <feMergeNode in="coloredBlur5"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+        <mask id="hexagonMask">
+            <rect x="-400" y="-400" width="1400" height="1400" fill="#fff" />
+            <path id="masking-hexagon" fill="#fff" stroke="black"  stroke-width="9"/> <!-- stroke-linejoin="round"-->
+        </mask>
+    </defs>
+    <g id="GlowingGroup" filter="url(#glow)">
+        <!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
+        <path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
+        <path id="ArrowTOP" class="main-fill" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" d="
+        M 300 250
+        L 275 265 L 293 251
+        L 299 150
+        C 299 150 299 130 280 123
+        C 280 123 260 121 260 112
+        L 300 12
+        M 300 250
+        L 325 265 L 307 251
+        L 301 150
+        C 301 150 301 130 320 123
+        C 320 123 340 121 340 112
+        L 300 12
+        "/>
+        <path id="ArrowLEFT" class="main-fill" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+        <path id="ArrowRIGHT" class="main-fill" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+    </g>
+<script>
+(function drawHex() {
+    SVGEl = document.getElementById("AbsoluteSolverLogo");
+    const cx = 300;
+    const cy = 341.5;
+    const rHexagon = 77; // Radius for the masking hexagon
+    const rMainShape = rHexagon * 1.10; // Radius for the main shape
+
+    function getHexPath(cx, cy, r) {
+      const points = [];
+      for (let i = 0; i < 6; i++) {
+            const angleDeg = 60 * i - 30;
+            const angleRad = Math.PI / 180 * angleDeg;
+            const x = cx + r * Math.cos(angleRad);
+            const y = cy + r * Math.sin(angleRad);
+            points.push(`${x.toFixed(4)},${y.toFixed(4)}`);
+        }
+        return `M${points[0]} L${points.slice(1).join(" L")} Z`;
+    }
+
+    function rotateArrow(pathData, angle, centerX, centerY) {
+        const angleRad = (angle * Math.PI) / 180;
+        const cos = Math.cos(angleRad);
+        const sin = Math.sin(angleRad);
+
+        return pathData.replace(/([ML])\s*([0-9.-]+)\s+([0-9.-]+)/g, (match, command, x, y) => {
+            const px = parseFloat(x);
+            const py = parseFloat(y);
+
+            const translatedX = px - centerX;
+            const translatedY = py - centerY;
+
+            const rotatedX = translatedX * cos - translatedY * sin;
+            const rotatedY = translatedX * sin + translatedY * cos;
+
+            const finalX = rotatedX + centerX;
+            const finalY = rotatedY + centerY;
+
+            return `${command} ${finalX.toFixed(4)} ${finalY.toFixed(4)}`;
+        }).replace(/([C])\s*([0-9.-]+)\s+([0-9.-]+)\s+([0-9.-]+)\s+([0-9.-]+)\s+([0-9.-]+)\s+([0-9.-]+)/g, (match, command, x1, y1, x2, y2, x3, y3) => {
+            const points = [
+                [parseFloat(x1), parseFloat(y1)],
+                [parseFloat(x2), parseFloat(y2)],
+                [parseFloat(x3), parseFloat(y3)]
+            ];
+
+            const rotatedPoints = points.map(([px, py]) => {
+                const translatedX = px - centerX;
+                const translatedY = py - centerY;
+                const rotatedX = translatedX * cos - translatedY * sin;
+                const rotatedY = translatedX * sin + translatedY * cos;
+                return [rotatedX + centerX, rotatedY + centerY];
+            });
+
+            return `${command} ${rotatedPoints.map(p => p.map(coord => coord.toFixed(4)).join(' ')).join(' ')}`;
+        });
+    }
+
+    const originalArrowPath = document.getElementById("ArrowTOP").getAttribute("d");
+
+    document.getElementById("masking-hexagon").setAttribute("d", getHexPath(cx, cy, rHexagon));
+    document.getElementById("MainShape").setAttribute("d", getHexPath(cx, cy, rMainShape));
+    document.getElementById("ArrowLEFT").setAttribute("d", rotateArrow(originalArrowPath, -120, cx, cy));
+    document.getElementById("ArrowRIGHT").setAttribute("d", rotateArrow(originalArrowPath, 120, cx, cy));
+
+    const FillColor = "#8000ff";
+    const StrokeColor = "#8000ff";
+    const GlowColor = "#fff";
+    const MainGroup = document.getElementById("GlowingGroup");
+    MainGroup.setAttribute("fill", FillColor);
+    MainGroup.setAttribute("stroke", StrokeColor);
+    const Glows = document.getElementsByClassName("glow");
+    for (i = 0; i < Glows.length; i++) {
+        Glows[i].setAttribute("flood-color", GlowColor)
+    }
+})();
+</script>
+</svg>
