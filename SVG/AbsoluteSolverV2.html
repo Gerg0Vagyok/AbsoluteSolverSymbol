@@ -5,6 +5,7 @@
         background-position: center;
         background-repeat: no-repeat;
         background-color: #f0f0f0;
+    }
 </style>-->
 <!--<style>
     .main-fill {
@@ -52,21 +53,23 @@
         </filter>
         <mask id="hexagonMask">
             <rect x="-400" y="-400" width="1400" height="1400" fill="#fff" />
-            <path id="masking-hexagon" fill="#fff" stroke="black"  stroke-width="9"/> <!-- stroke-linejoin="round"-->
+            <path id="masking-hexagon" fill="white" stroke="black"  stroke-width="9"/> <!-- stroke-linejoin="round"-->
         </mask>
     </defs>
     <g id="GlowingGroup" filter="url(#glow)">
         <!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
         <path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
         <path id="ArrowTOP" class="main-fill" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" d="
-        M 300 250
-        L 275 265 L 293 251
+        M 300 255
+        L 265 271
+        C 265 271 293 261 293 235
         L 299 150
         C 299 150 299 130 280 123
         C 280 123 260 121 260 112
         L 300 12
-        M 300 250
-        L 325 265 L 307 251
+        M 300 255
+        L 335 271
+        C 335 271 307 261 307 235
         L 301 150
         C 301 150 301 130 320 123
         C 320 123 340 121 340 112
@@ -140,9 +143,9 @@
     document.getElementById("ArrowLEFT").setAttribute("d", rotateArrow(originalArrowPath, -120, cx, cy));
     document.getElementById("ArrowRIGHT").setAttribute("d", rotateArrow(originalArrowPath, 120, cx, cy));
 
-    const FillColor = "#ff0";
-    const StrokeColor = "#ff0";
-    const GlowColor = "#000";
+    const FillColor = "#fff";
+    const StrokeColor = "#fff";
+    const GlowColor = "#f00";
     const MainGroup = document.getElementById("GlowingGroup");
     MainGroup.setAttribute("fill", FillColor);
     MainGroup.setAttribute("stroke", StrokeColor);

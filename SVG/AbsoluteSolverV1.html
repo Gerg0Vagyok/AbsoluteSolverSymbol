@@ -52,7 +52,7 @@
         </filter>
         <mask id="hexagonMask">
             <rect x="-400" y="-400" width="1400" height="1400" fill="#fff" />
-            <path id="masking-hexagon" fill="#fff" stroke="black"  stroke-width="9"/> <!-- stroke-linejoin="round"-->
+            <path id="masking-hexagon" fill="white" stroke="black"  stroke-width="9"/> <!-- stroke-linejoin="round"-->
         </mask>
     </defs>
     <g id="GlowingGroup" filter="url(#glow)">
@@ -140,8 +140,8 @@
     document.getElementById("ArrowLEFT").setAttribute("d", rotateArrow(originalArrowPath, -120, cx, cy));
     document.getElementById("ArrowRIGHT").setAttribute("d", rotateArrow(originalArrowPath, 120, cx, cy));
 
-    const FillColor = "#f00";
-    const StrokeColor = "#f00";
+    const FillColor = "#fff";
+    const StrokeColor = "#fff";
     const GlowColor = "#f00";
     const MainGroup = document.getElementById("GlowingGroup");
     MainGroup.setAttribute("fill", FillColor);
