@@ -1,4 +1,4 @@
-<style>
+<!--<style>
     #AbsoluteSolverLogo {
         background-image: url('https://i.imgur.com/kdjJFei.png'); /* An image from imgur */
         background-size: cover;
@@ -6,7 +6,7 @@
         background-repeat: no-repeat;
         background-color: #f0f0f0;
     }
-</style>
+</style>-->
 <!--<style>
     .main-fill {
         fill: #fff;
@@ -19,7 +19,7 @@
         background-color: #0000;
     }
 </style>-->
-<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="-400 -400 1400 1400" xmlns="http://www.w3.org/2000/svg">
     <defs>
         <filter id="glow" x="-100%" y="-100%" width="500%" height="500%">
             <feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
@@ -59,10 +59,10 @@
             <path id="HexRIGHT-Mask" fill="white" stroke="black"  stroke-width="6"/> <!-- stroke-linejoin="round"-->
         </mask>
     </defs>
-    <g id="GlowingGroup">
+    <g id="GlowingGroup" filter="url(#glow)">
         <!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
         <path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
-        <path id="ArrowTOP" class="main-fill" fill="#0000" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" d="
+        <path id="ArrowTOP" class="main-fill" stroke-width="10" stroke-linejoin="round" stroke-linecap="round" d="
         M 300 255
         L 265 271
         C 265 271 293 261 293 235
@@ -150,8 +150,8 @@
     originalHexMask.setAttribute("d", getHexPath(cx+0, cy-253.25, ruMainShape)); // I switched them upp then wondered. LOL Thats why its different.
     document.getElementById("HexLEFT").setAttribute("d", rotateArrow(originalHex.getAttribute("d"), -120, cx, cy));
     document.getElementById("HexRIGHT").setAttribute("d", rotateArrow(originalHex.getAttribute("d"), 120, cx, cy));
-    document.getElementById("HexLEFT-MASK").setAttribute("d", rotateArrow(originalHexMask.getAttribute("d"), -120, cx, cy));
-    document.getElementById("HexRIGHT-MASK").setAttribute("d", rotateArrow(originalHexMask.getAttribute("d"), 120, cx, cy));
+    document.getElementById("HexLEFT-Mask").setAttribute("d", rotateArrow(originalHexMask.getAttribute("d"), -120, cx, cy));
+    document.getElementById("HexRIGHT-Mask").setAttribute("d", rotateArrow(originalHexMask.getAttribute("d"), 120, cx, cy));
 
 
     document.getElementById("masking-hexagon").setAttribute("d", getHexPath(cx, cy, rHexagon));
