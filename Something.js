@@ -20,7 +20,5 @@ for (let o = 0; o < Colors.length; o++) {
   }
 }
 
-console.log(Commands.join(" \n"))
-
-
-
+await Deno.writeTextFile("output.sh", Commands.join("\n"));
+console.log("Wrote file with " + Commands.length + "lines!");
