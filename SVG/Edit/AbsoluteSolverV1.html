@@ -87,10 +87,7 @@ body {
 	<path id="SmallCutCircle0" mask="url(#InnerLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="SmallCutCircle1" mask="url(#OuterLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 
-	<!--<path id="test" class="main-fill" stroke-width="1" fill="#fff0" stroke="#000" stroke-linejoin="round" stroke-linecap="round" d="
-		M 300 1.75
-		L 300 6
-		"/>-->
+	<path id="test" class="main-fill" stroke-width="1" fill="#fff0" stroke="#000" stroke-linejoin="round" stroke-linecap="round"/>
 
 
 	</g>
@@ -397,17 +394,27 @@ body {
 			"M 300 1.75 L 300 6",
 		]
 
-		//document.getElementById("test").setAttribute("d", PossibleDots[0]);
+		const InnerPossibleDots = [
+			scalePath(getHalfCirclePath(cx, 119.5, 1, 0) + getHalfCirclePath(cx, 120, 1, 180), 0.55, 1, cx, cy),
+			"M 300 118.25 L 300 121",
+		]
+
+		//document.getElementById("test").setAttribute("d", InnerPossibleDots[0]);
 
 		const BitGroup0 = document.getElementById("ODotsLayer");
+		const BitGroup1 = document.getElementById("IDotsLayer");
 		//document.getElementById("dsa").setAttribute("d", rotatePath(document.getElementById("dsa").getAttribute("d"), 2, cx, cy));
 		//for (let i = 0; i < 3; i++) {
 		const OM = 232;
 		const OMP = 360/OM;
 		const OMA = [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1];
 
+		const IM = 192;
+		const IMP = 360/IM;
+		const IMA = [0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1];
 
-		for (let j = 0; j < 232; j++) {
+
+		for (let j = 0; j < OM; j++) {
 			const newel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 			newel.setAttribute("d", rotatePath(PossibleDots[OMA[j]], j*OMP, cx, cy))
 			newel.className = "main-fill";
@@ -416,11 +423,25 @@ body {
 			newel.setAttribute("stroke", "#0008");
 			newel.setAttribute("stroke-linejoin", "round");
 			newel.setAttribute("stroke-linecap", "round");
-			newel.setAttribute("filter", "url(#inwardBlack)");
+			//newel.setAttribute("filter", "url(#inwardBlack)");
 			BitGroup0.appendChild(newel);
 			//class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round"
 		}
 		//}
+		for (let j = 0; j < IM; j++) {
+			const newel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			newel.setAttribute("d", rotatePath(InnerPossibleDots[IMA[j]], j*IMP, cx, cy))
+			newel.className = "main-fill";
+			newel.setAttribute("stroke-width", 0.5);
+			newel.setAttribute("fill", "#fff0");
+			newel.setAttribute("stroke", "#0008");
+			newel.setAttribute("stroke-linejoin", "round");
+			newel.setAttribute("stroke-linecap", "round");
+			//newel.setAttribute("filter", "url(#inwardBlack)");
+			BitGroup1.appendChild(newel);
+			//class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round"
+		}
+
 
 		// Set colors
 		const FillColor = "#fff";
