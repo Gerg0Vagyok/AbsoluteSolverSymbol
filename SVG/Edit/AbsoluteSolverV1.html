@@ -1,4 +1,4 @@
-<style>
+<!--<style>
 	#AbsoluteSolverLogo {
 		background-image: url('https://static.wikia.nocookie.net/murder-drones/images/2/2c/AbsoluteSolverIconEdit.png'); /* An image from imgur */
 		background-size: cover;
@@ -6,7 +6,7 @@
 		background-repeat: no-repeat;
 		background-color: #f0f0f0;
 	}
-</style>
+</style>-->
 <!--<style>
 	.main-fill {
 		fill: #fff;
@@ -19,12 +19,12 @@
 		background-color: #0000;
 	}
 </style>-->
-<!--<style>
+<style>
 body {
 	background-color: #000;
 }
-</style>-->
-<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+</style>
+<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="-400 -400 1400 1400" xmlns="http://www.w3.org/2000/svg">
 	<defs>
 		<filter id="glow" x="-100%" y="-100%" width="500%" height="500%">
 			<feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
@@ -73,7 +73,7 @@ body {
 			<path id="outerLine-mask" fill="black" stroke="black" stroke-wdith="7"/>
 		</mask>
 	</defs>
-	<g id="GlowingGroup" >
+	<g id="GlowingGroup" filter="url(#glow)">
 	<!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
 	<path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
 	<path id="OuterCircle1" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
@@ -87,7 +87,7 @@ body {
 	<path id="SmallCutCircle0" mask="url(#InnerLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="SmallCutCircle1" mask="url(#OuterLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 
-	<path id="test" class="main-fill" stroke-width="1" fill="#fff0" stroke="#000" stroke-linejoin="round" stroke-linecap="round"/>
+	<!--<path id="test" class="main-fill" stroke-width="1" fill="#fff0" stroke="#000" stroke-linejoin="round" stroke-linecap="round"/>-->
 
 
 	</g>
