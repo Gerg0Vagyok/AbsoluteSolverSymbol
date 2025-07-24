@@ -1,0 +1,316 @@
+<style>
+	#AbsoluteSolverLogo {
+		background-image: url('https://static.wikia.nocookie.net/murder-drones/images/2/2c/AbsoluteSolverIconEdit.png'); /* An image from imgur */
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		background-color: #f0f0f0;
+	}
+</style>
+<!--<style>
+	.main-fill {
+		fill: #fff;
+		stroke: #fff;
+	}
+	.glow {
+		flood-color: #f00;
+	}
+	* {
+		background-color: #0000;
+	}
+</style>-->
+<!--<style>
+body {
+	background-color: #000;
+}
+</style>-->
+<svg id="AbsoluteSolverLogo" width="700" height="700" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<filter id="glow" x="-100%" y="-100%" width="500%" height="500%">
+			<feGaussianBlur in="SourceAlpha" stdDeviation="10" result="blur"/>
+			<feFlood class="glow" result="color"/>
+			<feComposite in="color" in2="blur" operator="in" result="coloredBlur"/>
+
+			<feGaussianBlur in="SourceAlpha" stdDeviation="40" result="blur2"/>
+			<feFlood class="glow" result="color"/>
+			<feComposite in="color" in2="blur2" operator="in" result="coloredBlur2"/>
+
+			<feGaussianBlur in="SourceAlpha" stdDeviation="80" result="blur3"/>
+			<feFlood class="glow" result="color"/>
+			<feComposite in="color" in2="blur3" operator="in" result="coloredBlur3"/>
+
+			<feGaussianBlur in="SourceAlpha" stdDeviation="180" result="blur4"/>
+			<feFlood class="glow" result="color"/>
+			<feComposite in="color" in2="blur4" operator="in" result="coloredBlur4"/>
+
+			<feGaussianBlur in="SourceAlpha" stdDeviation="180" result="blur5"/>
+			<feFlood class="glow" result="color"/>
+			<feComposite in="color" in2="blur5" operator="in" result="coloredBlur5"/>
+
+			<feMerge>
+				<feMergeNode in="coloredBlur"/>
+				<feMergeNode in="coloredBlur2"/>
+				<feMergeNode in="coloredBlur3"/>
+				<feMergeNode in="coloredBlur4"/>
+				<feMergeNode in="coloredBlur5"/>
+				<feMergeNode in="SourceGraphic"/>
+			</feMerge>
+		</filter>
+		<filter id="inwardBlack" x="-100%" y="-100%" width="500%" height="500%">
+			<feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
+			<feFlood flood-color="#000" result="color"/>
+			<feComposite in="color" in2="blur" operator="out" result="coloredBlur"/>
+			<feComposite in="coloredBlur" in2="SourceGraphic" operator="atop" result="inwardGlow"/>
+			<feMerge>
+				<feMergeNode in="SourceGraphic"/>
+				<feMergeNode in="inwardGlow"/>
+			</feMerge>
+		</filter>
+		<mask id="hexagonMask" maskUnits="userSpaceOnUse">
+		<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
+		<path id="masking-hexagon" fill="white" stroke="black"  stroke-width="7"/>
+		</mask>
+	</defs>
+	<g id="GlowingGroup" >
+	<!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
+	<path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
+	<path id="OuterCircle1" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="OuterCircle2" class="main-fill" stroke-width="70" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="OuterCircle3" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="OuterCircle4" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="Outer8Lines" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<g id="ODotsLayer0"></g>
+
+	<!--<path class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" d="
+		M 298.5 2.5
+		L 303.5 2.5
+		L 303.5 4.5
+		L 298.5 6.5
+		L 298.5 2.5
+	"/>-->
+
+
+	</g>
+	<script>
+	(function drawHex() {
+		const SVGEl = document.getElementById("AbsoluteSolverLogo");
+		const cx = 300;
+		const cy = 300;
+		const rHexagon = 97.5;
+		const rMainShape = rHexagon * 1.18;
+
+		function getHexPath(cx, cy, r) {
+			const points = [];
+			for (let i = 0; i < 6; i++) {
+				const angleDeg = 60 * i - 30;
+				const angleRad = Math.PI / 180 * angleDeg;
+				const x = cx + r * Math.cos(angleRad);
+				const y = cy + r * Math.sin(angleRad);
+				points.push(`${x.toFixed(4)},${y.toFixed(4)}`);
+			}
+			return `M${points[0]} L${points.slice(1).join(" L")} Z`;
+		}
+
+		function rotatePath(pathData, angle, centerX, centerY) {
+			const angleRad = (angle * Math.PI) / 180;
+			const cos = Math.cos(angleRad);
+			const sin = Math.sin(angleRad);
+
+			function rotatePoint(x, y) {
+				const translatedX = x - centerX;
+				const translatedY = y - centerY;
+				const rotatedX = translatedX * cos - translatedY * sin;
+				const rotatedY = translatedX * sin + translatedY * cos;
+				return {
+					x: rotatedX + centerX,
+					y: rotatedY + centerY
+				};
+			}
+
+			return pathData.replace(/([MLHVCSQTAZ])\s*([^MLHVCSQTAZ]*)/gi, (match, command, coords) => {
+				if (!coords.trim()) return command;
+
+				const numbers = coords.trim().split(/[\s,]+/).map(n => parseFloat(n)).filter(n => !isNaN(n));
+				const rotatedNumbers = [];
+
+				// Process coordinate pairs
+				for (let i = 0; i < numbers.length; i += 2) {
+					if (i + 1 < numbers.length) {
+						const rotated = rotatePoint(numbers[i], numbers[i + 1]);
+						rotatedNumbers.push(rotated.x.toFixed(4), rotated.y.toFixed(4));
+					}
+				}
+
+				return command + ' ' + rotatedNumbers.join(' ');
+			});
+		}
+
+		// Improved rotation function that handles points directly
+		function rotatePoint(x, y, angle, centerX, centerY) {
+			const angleRad = (angle * Math.PI) / 180;
+			const cos = Math.cos(angleRad);
+			const sin = Math.sin(angleRad);
+
+			const translatedX = x - centerX;
+			const translatedY = y - centerY;
+
+			const rotatedX = translatedX * cos - translatedY * sin;
+			const rotatedY = translatedX * sin + translatedY * cos;
+
+			return {
+				x: rotatedX + centerX,
+				y: rotatedY + centerY
+			};
+		}
+
+		// Generate circle path with proper cubic bezier curves
+		function getCirclePath(cx, cy, r) {
+			const k = (4/3) * Math.tan(Math.PI/8) * r;
+			return `M ${cx + r} ${cy} C ${cx + r} ${cy + k} ${cx + k} ${cy + r} ${cx} ${cy + r} C ${cx - k} ${cy + r} ${cx - r} ${cy + k} ${cx - r} ${cy} C ${cx - r} ${cy - k} ${cx - k} ${cy - r} ${cx} ${cy - r} C ${cx + k} ${cy - r} ${cx + r} ${cy - k} ${cx + r} ${cy} Z`;
+		}
+
+		// Generate rotated flattened ellipse path
+		function getRotatedEllipsePath(cx, cy, rx, ry, angle) {
+			const k = (4/3) * Math.tan(Math.PI/8);
+			const kx = k * rx;
+			const ky = k * ry;
+
+			// Define all control points for ellipse
+			const points = [
+				{x: cx + rx, y: cy},	  // M point
+				{x: cx + rx, y: cy + ky}, // C1 control 1
+				{x: cx + kx, y: cy + ry}, // C1 control 2
+				{x: cx, y: cy + ry},	  // C1 end
+				{x: cx - kx, y: cy + ry}, // C2 control 1
+				{x: cx - rx, y: cy + ky}, // C2 control 2
+				{x: cx - rx, y: cy},	  // C2 end
+				{x: cx - rx, y: cy - ky}, // C3 control 1
+				{x: cx - kx, y: cy - ry}, // C3 control 2
+				{x: cx, y: cy - ry},	  // C3 end
+				{x: cx + kx, y: cy - ry}, // C4 control 1
+				{x: cx + rx, y: cy - ky}, // C4 control 2
+				{x: cx + rx, y: cy}	   // C4 end
+			];
+
+			// Rotate all points
+			const rotatedPoints = points.map(p => rotatePoint(p.x, p.y, angle, cx, cy));
+
+			return `M ${rotatedPoints[0].x.toFixed(4)} ${rotatedPoints[0].y.toFixed(4)} ` +
+					`C ${rotatedPoints[1].x.toFixed(4)} ${rotatedPoints[1].y.toFixed(4)} ${rotatedPoints[2].x.toFixed(4)} ${rotatedPoints[2].y.toFixed(4)} ${rotatedPoints[3].x.toFixed(4)} ${rotatedPoints[3].y.toFixed(4)} ` +
+					`C ${rotatedPoints[4].x.toFixed(4)} ${rotatedPoints[4].y.toFixed(4)} ${rotatedPoints[5].x.toFixed(4)} ${rotatedPoints[5].y.toFixed(4)} ${rotatedPoints[6].x.toFixed(4)} ${rotatedPoints[6].y.toFixed(4)} ` +
+					`C ${rotatedPoints[7].x.toFixed(4)} ${rotatedPoints[7].y.toFixed(4)} ${rotatedPoints[8].x.toFixed(4)} ${rotatedPoints[8].y.toFixed(4)} ${rotatedPoints[9].x.toFixed(4)} ${rotatedPoints[9].y.toFixed(4)} ` +
+					`C ${rotatedPoints[10].x.toFixed(4)} ${rotatedPoints[10].y.toFixed(4)} ${rotatedPoints[11].x.toFixed(4)} ${rotatedPoints[11].y.toFixed(4)} ${rotatedPoints[12].x.toFixed(4)} ${rotatedPoints[12].y.toFixed(4)} Z`;
+		}
+
+		function translatePath(pathData, dx, dy) {
+			return pathData.replace(/([MmLlHhVvCcSsQqTtAaZz])\s*([^MmLlHhVvCcSsQqTtAaZz]*)/g, (match, cmd, params) => {
+				if (!params.trim()) return cmd;
+				const coords = params.split(/[\s,]+/).filter(s => s !== '').map(parseFloat);
+				const isAbs = cmd === cmd.toUpperCase();
+				let result = [];
+
+				switch (cmd.toLowerCase()) {
+				case 'm': case 'l':
+					for (let i = 0; i < coords.length; i += 2) {
+					const translateThis = isAbs || (cmd === 'm' && i === 0);
+					result.push(coords[i] + (translateThis ? dx : 0), coords[i + 1] + (translateThis ? dy : 0));
+					}
+					break;
+				case 'h':
+					result = isAbs ? coords.map(x => x + dx) : coords;
+					break;
+				case 'v':
+					result = isAbs ? coords.map(y => y + dy) : coords;
+					break;
+				case 'c':
+					for (let i = 0; i < coords.length; i += 6) {
+					result.push(...(isAbs ? [coords[i] + dx, coords[i + 1] + dy, coords[i + 2] + dx, coords[i + 3] + dy, coords[i + 4] + dx, coords[i + 5] + dy] : coords.slice(i, i + 6)));
+					}
+					break;
+				case 's':
+					for (let i = 0; i < coords.length; i += 4) {
+					result.push(...(isAbs ? [coords[i] + dx, coords[i + 1] + dy, coords[i + 2] + dx, coords[i + 3] + dy] : coords.slice(i, i + 4)));
+					}
+					break;
+				case 'q':
+					for (let i = 0; i < coords.length; i += 4) {
+					result.push(...(isAbs ? [coords[i] + dx, coords[i + 1] + dy, coords[i + 2] + dx, coords[i + 3] + dy] : coords.slice(i, i + 4)));
+					}
+					break;
+				case 't':
+					for (let i = 0; i < coords.length; i += 2) {
+					result.push(coords[i] + (isAbs ? dx : 0), coords[i + 1] + (isAbs ? dy : 0));
+					}
+					break;
+				case 'a':
+					for (let i = 0; i < coords.length; i += 7) {
+					result.push(coords[i], coords[i + 1], coords[i + 2], coords[i + 3], coords[i + 4], coords[i + 5] + (isAbs ? dx : 0), coords[i + 6] + (isAbs ? dy : 0));
+					}
+					break;
+				default:
+					result = coords;
+				}
+
+				return cmd + result.join(' ');
+			});
+		}
+
+		// Set up the paths
+		document.getElementById("masking-hexagon").setAttribute("d", getHexPath(cx, cy, rHexagon));
+		document.getElementById("MainShape").setAttribute("d", getHexPath(cx, cy, rMainShape));
+
+		const r  = 194.5;
+	const r2 = 267.5;
+	const r3 = 276.5;
+
+		// Outer circle (unchanged)
+		document.getElementById("OuterCircle1").setAttribute("d", getCirclePath(cx, cy, r));
+		document.getElementById("OuterCircle2").setAttribute("d", getCirclePath(cx, cy, (r-r2)/2+r2));
+		document.getElementById("OuterCircle3").setAttribute("d", getCirclePath(cx, cy, r2));
+		document.getElementById("OuterCircle4").setAttribute("d", getCirclePath(cx, cy, r3));
+
+	const Outer8LinesPath = document.getElementById("Outer8Lines");
+	Outer8LinesPath.setAttribute("d", `
+	
+
+
+	`)
+
+		const PossibleDots = [
+			"M 298.5 7.5 L 302.5 7.5 L 302.5 9.5 L 300.5 11 C 300.5 11 298.5 11 298.5 7.5",
+			"M 298.5 7.5 L 302.5 7.5 L 302.5 9.5 C 302.5 9.5 302.5 11 300.5 11 L 300.5 11 L 298.5 9.5 L 298.5 7.5",
+		]
+
+		/*const BitGroup0 = document.getElementById("Bitlayer0");
+		//document.getElementById("dsa").setAttribute("d", rotatePath(document.getElementById("dsa").getAttribute("d"), 2, cx, cy));
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 180; j++) {
+				const newel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+				newel.setAttribute("d", rotatePath(translatePath(PossibleDots[Math.floor(Math.random() * PossibleDots.length)], Math.random() * 4 - 2, (i-1)*8), j*2, cx, cy))
+				newel.className = "main-fill";
+				newel.setAttribute("stroke-width", 0.5);
+				//newel.setAttribute("fill", "#fff");
+				newel.setAttribute("stroke", "#00000066");
+				newel.setAttribute("stroke-linejoin", "round");
+				newel.setAttribute("stroke-linecap", "round");
+				newel.setAttribute("filter", "url(#inwardBlack)");
+				BitGroup0.appendChild(newel);
+				//class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round"
+			}
+		}*/
+
+		// Set colors
+		const FillColor = "#fff";
+		const StrokeColor = "#fff";
+		const GlowColor = "#f00";
+		const MainGroup = document.getElementById("GlowingGroup");
+		MainGroup.setAttribute("fill", FillColor);
+		MainGroup.setAttribute("stroke", StrokeColor);
+
+		const Glows = document.getElementsByClassName("glow");
+		for (let i = 0; i < Glows.length; i++) {
+			Glows[i].setAttribute("flood-color", GlowColor);
+		}
+	})();
+	</script>
+</svg>
