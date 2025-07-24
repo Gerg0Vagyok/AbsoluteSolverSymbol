@@ -56,16 +56,6 @@ body {
 				<feMergeNode in="SourceGraphic"/>
 			</feMerge>
 		</filter>
-		<filter id="inwardBlack" x="-100%" y="-100%" width="500%" height="500%">
-			<feGaussianBlur in="SourceGraphic" stdDeviation="1" result="blur"/>
-			<feFlood flood-color="#000" result="color"/>
-			<feComposite in="color" in2="blur" operator="out" result="coloredBlur"/>
-			<feComposite in="coloredBlur" in2="SourceGraphic" operator="atop" result="inwardGlow"/>
-			<feMerge>
-				<feMergeNode in="SourceGraphic"/>
-				<feMergeNode in="inwardGlow"/>
-			</feMerge>
-		</filter>
 		<mask id="hexagonMask" maskUnits="userSpaceOnUse">
 			<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
 			<path id="masking-hexagon" fill="white" stroke="black" stroke-width="7"/>
@@ -91,18 +81,16 @@ body {
 	<path id="OuterCircle3" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="OuterCircle4" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="Outer8Lines" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
-	<g id="ODotsLayer0"></g>
+	<g id="ODotsLayer"></g>
+	<g id="IDotsLayer"></g>
 
 	<path id="SmallCutCircle0" mask="url(#InnerLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="SmallCutCircle1" mask="url(#OuterLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 
-	<!--<path class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" d="
-		M 298.5 2.5
-		L 303.5 2.5
-		L 303.5 4.5
-		L 298.5 6.5
-		L 298.5 2.5
-	"/>-->
+	<!--<path id="test" class="main-fill" stroke-width="1" fill="#fff0" stroke="#000" stroke-linejoin="round" stroke-linecap="round" d="
+		M 300 1.75
+		L 300 6
+		"/>-->
 
 
 	</g>
@@ -270,6 +258,105 @@ body {
 			});
 		}
 
+		// Generate half circle path with proper cubic bezier curves
+		function getHalfCirclePath(cx, cy, r, startAngle = 0) {
+			const k = (4/3) * Math.tan(Math.PI/8) * r;
+
+			// Convert start angle to radians
+			const angleRad = (startAngle * Math.PI) / 180;
+			const cos = Math.cos(angleRad);
+			const sin = Math.sin(angleRad);
+ 		   
+			// Define half circle points (top half by default)
+			const points = [
+				{x: r, y: 0},	  // Start point
+				{x: r, y: -k},	 // Control point 1
+				{x: k, y: -r},	 // Control point 2
+				{x: 0, y: -r},	 // Mid point
+				{x: -k, y: -r},	// Control point 3
+				{x: -r, y: -k},	// Control point 4
+				{x: -r, y: 0}	  // End point
+			];
+		 
+			// Rotate and translate points
+			const rotatedPoints = points.map(p => ({
+				x: cx + (p.x * cos - p.y * sin),
+				y: cy + (p.x * sin + p.y * cos)
+			}));
+		
+			return `M ${rotatedPoints[0].x.toFixed(4)} ${rotatedPoints[0].y.toFixed(4)} ` +
+		`C ${rotatedPoints[1].x.toFixed(4)} ${rotatedPoints[1].y.toFixed(4)} ${rotatedPoints[2].x.toFixed(4)} ${rotatedPoints[2].y.toFixed(4)} ${rotatedPoints[3].x.toFixed(4)} ${rotatedPoints[3].y.toFixed(4)} ` +
+		`C ${rotatedPoints[4].x.toFixed(4)} ${rotatedPoints[4].y.toFixed(4)} ${rotatedPoints[5].x.toFixed(4)} ${rotatedPoints[5].y.toFixed(4)} ${rotatedPoints[6].x.toFixed(4)} ${rotatedPoints[6].y.toFixed(4)}`;
+		} 
+
+		function scalePath(pathData, scaleX, scaleY, originX = 0, originY = 0) {
+
+			return pathData.replace(/([MLHVCSQTAZ])\s*([^MLHVCSQTAZ]*)/gi, (match, command, coords) => {
+				if (!coords.trim()) return command;
+
+				const numbers = coords.trim().split(/[\s,]+/).map(n => parseFloat(n)).filter(n => !isNaN(n));
+				const scaledNumbers = [];
+
+				switch (command.toUpperCase()) {
+					case 'M': case 'L': case 'T':
+						for (let i = 0; i < numbers.length; i += 2) {
+							if (i + 1 < numbers.length) {
+								scaledNumbers.push(
+									originX + (numbers[i] - originX) * scaleX,
+									originY + (numbers[i + 1] - originY) * scaleY
+								);
+							}
+						}
+						break;
+					case 'H':
+						scaledNumbers.push(...numbers.map(x => originX + (x - originX) * scaleX));
+						break;
+					case 'V':
+						scaledNumbers.push(...numbers.map(y => originY + (y - originY) * scaleY));
+						break;
+					case 'C':
+						for (let i = 0; i < numbers.length; i += 6) {
+							scaledNumbers.push(
+								originX + (numbers[i] - originX) * scaleX,	 // x1
+								originY + (numbers[i + 1] - originY) * scaleY, // y1
+								originX + (numbers[i + 2] - originX) * scaleX, // x2
+								originY + (numbers[i + 3] - originY) * scaleY, // y2
+								originX + (numbers[i + 4] - originX) * scaleX, // x
+								originY + (numbers[i + 5] - originY) * scaleY  // y
+							);
+						}
+						break;
+					case 'S': case 'Q':
+						for (let i = 0; i < numbers.length; i += 4) {
+							scaledNumbers.push(
+								originX + (numbers[i] - originX) * scaleX,
+								originY + (numbers[i + 1] - originY) * scaleY,
+								originX + (numbers[i + 2] - originX) * scaleX,
+								originY + (numbers[i + 3] - originY) * scaleY
+							);
+						}
+						break;
+					case 'A':
+						for (let i = 0; i < numbers.length; i += 7) {
+							scaledNumbers.push(
+								numbers[i] * scaleX, // rx
+								numbers[i + 1] * scaleY, // ry
+								numbers[i + 2],	  // rotation (unchanged)
+								numbers[i + 3],	  // large-arc-flag
+								numbers[i + 4],	  // sweep-flag
+								originX + (numbers[i + 5] - originX) * scaleX, // x
+								originY + (numbers[i + 6] - originY) * scaleY  // y
+							);
+						}
+						break;
+					default:
+						scaledNumbers.push(...numbers);
+				} 
+	 	  
+				return command + ' ' + scaledNumbers.map(n => n.toFixed(4)).join(' ');
+			});
+		}	 
+
 		// Set up the paths
 		document.getElementById("masking-hexagon").setAttribute("d", getHexPath(cx, cy, rHexagon));
 		document.getElementById("MainShape").setAttribute("d", getHexPath(cx, cy, rMainShape));
@@ -306,27 +393,34 @@ body {
 		}
 
 		const PossibleDots = [
-			"M 298.5 7.5 L 302.5 7.5 L 302.5 9.5 L 300.5 11 C 300.5 11 298.5 11 298.5 7.5",
-			"M 298.5 7.5 L 302.5 7.5 L 302.5 9.5 C 302.5 9.5 302.5 11 300.5 11 L 300.5 11 L 298.5 9.5 L 298.5 7.5",
+			scalePath(getHalfCirclePath(cx, 3.75, 2, 0) + getHalfCirclePath(cx, 4, 2, 180), 0.55, 1, cx, cy),
+			"M 300 1.75 L 300 6",
 		]
 
-		/*const BitGroup0 = document.getElementById("Bitlayer0");
+		//document.getElementById("test").setAttribute("d", PossibleDots[0]);
+
+		const BitGroup0 = document.getElementById("ODotsLayer");
 		//document.getElementById("dsa").setAttribute("d", rotatePath(document.getElementById("dsa").getAttribute("d"), 2, cx, cy));
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 180; j++) {
-				const newel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-				newel.setAttribute("d", rotatePath(translatePath(PossibleDots[Math.floor(Math.random() * PossibleDots.length)], Math.random() * 4 - 2, (i-1)*8), j*2, cx, cy))
-				newel.className = "main-fill";
-				newel.setAttribute("stroke-width", 0.5);
-				//newel.setAttribute("fill", "#fff");
-				newel.setAttribute("stroke", "#00000066");
-				newel.setAttribute("stroke-linejoin", "round");
-				newel.setAttribute("stroke-linecap", "round");
-				newel.setAttribute("filter", "url(#inwardBlack)");
-				BitGroup0.appendChild(newel);
-				//class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round"
-			}
-		}*/
+		//for (let i = 0; i < 3; i++) {
+		const OM = 232;
+		const OMP = 360/OM;
+		const OMA = [0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1];
+
+
+		for (let j = 0; j < 232; j++) {
+			const newel = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			newel.setAttribute("d", rotatePath(PossibleDots[OMA[j]], j*OMP, cx, cy))
+			newel.className = "main-fill";
+			newel.setAttribute("stroke-width", 0.5);
+			newel.setAttribute("fill", "#fff0");
+			newel.setAttribute("stroke", "#0008");
+			newel.setAttribute("stroke-linejoin", "round");
+			newel.setAttribute("stroke-linecap", "round");
+			newel.setAttribute("filter", "url(#inwardBlack)");
+			BitGroup0.appendChild(newel);
+			//class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round"
+		}
+		//}
 
 		// Set colors
 		const FillColor = "#fff";
