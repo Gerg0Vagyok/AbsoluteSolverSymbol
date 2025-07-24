@@ -20,7 +20,7 @@ for (let o = 0; o < Colors.length; o++) {
   }
 }
 
-console.log(Commands.join(" && "))
+console.log(Commands.join(" \n"))
 
 
 
