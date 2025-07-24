@@ -67,19 +67,34 @@ body {
 			</feMerge>
 		</filter>
 		<mask id="hexagonMask" maskUnits="userSpaceOnUse">
-		<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
-		<path id="masking-hexagon" fill="white" stroke="black"  stroke-width="7"/>
+			<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
+			<path id="masking-hexagon" fill="white" stroke="black" stroke-width="7"/>
+		</mask>
+		<mask id="InnerLineMask" maskUnits="userSpaceOnUse">
+			<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
+			<path id="innerLine-mask" fill="black" stroke="black" stroke-wdith="7"/>
+		</mask>
+		<mask id="MiddleLineMask" maskUnits="userSpaceOnUse">
+			<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
+			<path id="middleLine-mask" fill="black" stroke="black" stroke-wdith="7"/>
+		</mask>
+		<mask id="OuterLineMask" maskUnits="userSpaceOnUse">
+			<rect x="-800" y="-800" width="1800" height="1800" fill="#fff" />
+			<path id="outerLine-mask" fill="black" stroke="black" stroke-wdith="7"/>
 		</mask>
 	</defs>
 	<g id="GlowingGroup" >
 	<!--<path id="hexagon-path" fill="#00000000" stroke="black" stroke-width="16" stroke-linejoin="round" />-->
 	<path id="MainShape" class="main-fill" stroke-width="20" mask="url(#hexagonMask)"/> <!-- stroke-linejoin="round"-->
 	<path id="OuterCircle1" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
-	<path id="OuterCircle2" class="main-fill" stroke-width="70" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="OuterCircle2" mask="url(#MiddleLineMask)" class="main-fill" stroke-width="70" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="OuterCircle3" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="OuterCircle4" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<path id="Outer8Lines" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 	<g id="ODotsLayer0"></g>
+
+	<path id="SmallCutCircle0" mask="url(#InnerLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
+	<path id="SmallCutCircle1" mask="url(#OuterLineMask)" class="main-fill" stroke-width="4.75" fill="#0000" stroke-linejoin="round" stroke-linecap="round"/>
 
 	<!--<path class="main-fill" stroke-width="1" fill="#fff" stroke="#000" stroke-linejoin="round" stroke-linecap="round" d="
 		M 298.5 2.5
@@ -259,22 +274,36 @@ body {
 		document.getElementById("masking-hexagon").setAttribute("d", getHexPath(cx, cy, rHexagon));
 		document.getElementById("MainShape").setAttribute("d", getHexPath(cx, cy, rMainShape));
 
-		const r  = 194.5;
-	const r2 = 267.5;
-	const r3 = 276.5;
+		const r   = 194.5;
+		const r2  = 267.5;
+		const r3  = 276.5;
+
+		const cr0 = 187;
+		const cr1 = 288;
+		
+
+
+		document.getElementById("SmallCutCircle0").setAttribute("d", getCirclePath(cx, cy, cr0));
+		document.getElementById("SmallCutCircle1").setAttribute("d", getCirclePath(cx, cy, cr1));
+
+		document.getElementById("innerLine-mask").setAttribute("d", rotatePath("M 1200 -400 L 300 0 L 300 300", -138.25, cx, cy) + rotatePath("L 300 0", 23, cx, cy));
+		document.getElementById("outerLine-mask").setAttribute("d", rotatePath("M 2600 -800 L 300 0 L 300 300", 44, cx, cy) + rotatePath("L 300 0", 200, cx, cy));
+		document.getElementById("middleLine-mask").setAttribute("d", 
+			rotatePath("M 2600 -800 L 300 0 L 300 300", 45, cx, cy) + rotatePath("L 300 0", 180, cx, cy) + 
+			rotatePath("M 2600 -800 L 300 0 L 300 300", 225, cx, cy) + rotatePath("L 300 0", 270, cx, cy));
 
 		// Outer circle (unchanged)
 		document.getElementById("OuterCircle1").setAttribute("d", getCirclePath(cx, cy, r));
 		document.getElementById("OuterCircle2").setAttribute("d", getCirclePath(cx, cy, (r-r2)/2+r2));
 		document.getElementById("OuterCircle3").setAttribute("d", getCirclePath(cx, cy, r2));
 		document.getElementById("OuterCircle4").setAttribute("d", getCirclePath(cx, cy, r3));
-
-	const Outer8LinesPath = document.getElementById("Outer8Lines");
-	Outer8LinesPath.setAttribute("d", `
 	
+		const Outer8LinesPath = document.getElementById("Outer8Lines");
+		Outer8LinesPath.setAttribute("d", "M 300 105.5 L 300 23.75");
 
-
-	`)
+		for (let i = 0; i < 8; i++) {
+			Outer8LinesPath.setAttribute("d", Outer8LinesPath.getAttribute("d") + rotatePath(Outer8LinesPath.getAttribute("d"), i*45, cx, cy));
+		}
 
 		const PossibleDots = [
 			"M 298.5 7.5 L 302.5 7.5 L 302.5 9.5 L 300.5 11 C 300.5 11 298.5 11 298.5 7.5",
